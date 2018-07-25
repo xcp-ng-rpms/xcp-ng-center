@@ -3,13 +3,14 @@
 
 Summary: XCP-ng Center
 Name: xcp-ng-center
-Version: 7.5.0.8
-Release: 1
+%define version_xyz 7.5.0
+Version: %{version_xyz}.8
+Release: 2
 License: BSD 2-Clause
 Vendor: %{VENDOR_FULL}
 BuildArch: noarch
 URL: https://github.com/xcp-ng/xenadmin
-Source0: XCP-ng-Center-%{version}.msi
+Source0: https://github.com/xcp-ng/xenadmin/releases/download/v%{version_xyz}/XCP-ng-Center-%{version}.msi
 Source1: XCP-ng-Center.ico
 Source2: AUTORUN.INF
 BuildRequires: mkisofs
@@ -39,34 +40,61 @@ mkisofs -J -r -v -publisher "%{VENDOR_FULL}" -p "%{VENDOR_FULL}" -V %{PRODUCT} -
 %{__install} -d %{buildroot}/%{www_dir}
 %{__install} -m 644 XenCenter.iso      %{buildroot}/%{iso_dir}/XenCenter.iso
 ln -s /%{iso_dir}/XenCenter.iso        %{buildroot}/%{www_dir}/XenCenter.iso
-ln -s /%{mnt_dir}/%{PRODUCT}.msi       %{buildroot}/%{www_dir}/%{PRODUCT}.msi
 
 %pre
 if [ $1 -gt 1 ]; then
-  # upgrade
-
+  # upgrade: unmount the mount directory before upgrade
   # remove the EXE/msi symlink to prevent XAPI opening it
   rm -f /%{www_dir}/%{PRODUCT}.msi
   # if XAPI already has the MSI open the unmount will fail, retry a few times
   for i in $(seq 1 10); do
-    umount %{mnt_dir} 2>/dev/null && break
-    echo "Failed to unmount %{mnt_dir}, retrying..."
+    umount /%{mnt_dir} 2>/dev/null && break
+    echo "Failed to unmount /%{mnt_dir}, retrying..."
+    sleep .3
+  done
+elif [ -f /opt/xensource/www/XenCenter.msi ]; then
+  # we are obsoleting xencenter package from XCP 7.4.x,
+  # remove the EXE/msi symlink to prevent XAPI opening it
+  rm -f /opt/xensource/www/XenCenter.msi
+  # if XAPI already has the MSI open the unmount will fail, retry a few times
+  for i in $(seq 1 10); do
+    umount /var/xen/xc-install 2>/dev/null && break
+    echo "Failed to unmount /var/xen/xc-install, retrying..."
+    sleep .3
+  done
+  # Add symlink back to avoid uninstallation warning of old package
+  ln -sf /var/xen/xc-install/XenCenter.msi /opt/xensource/www/XenCenter.msi
+fi
+
+%post
+grep -q %{mnt_dir} %{_sysconfdir}/fstab && mount %{mnt_dir}
+ln -sf /%{mnt_dir}/%{PRODUCT}.msi /%{www_dir}/%{PRODUCT}.msi
+
+%preun
+if [ $1 = 0 ]; then
+  # uninstallation: unmount the mount directory before uninstall
+  # remove the EXE/msi symlink to prevent XAPI opening it
+  # and because the package doesn't own it
+  rm -f /%{www_dir}/%{PRODUCT}.msi
+  # if XAPI already has the MSI open the unmount will fail, retry a few times
+  for i in $(seq 1 10); do
+    umount /%{mnt_dir} 2>/dev/null && break
+    echo "Failed to unmount /%{mnt_dir}, retrying..."
     sleep .3
   done
 fi
-
-# Use a posttrans script rather than post, old RPMs contained files in %{mnt_dir}
-%posttrans
-grep -q %{mnt_dir} %{_sysconfdir}/fstab && mount %{mnt_dir}
 
 %files
 /%{iso_dir}/XenCenter.iso
 %dir /%{mnt_dir}
 /%{www_dir}/XenCenter.iso
-/%{www_dir}/%{PRODUCT}.msi
 
 %changelog
-* Tue Jul 24 2018 Samuel Verschelde <stormi-xcp@ylix.fr> - 7.5.0.8
+* Wed Jul 25 2018 Samuel Verschelde <stormi-xcp@ylix.fr> - 7.5.0.8-2
+- Fix uninstall/upgrade/install scripts
+- Update Source URL
+
+* Tue Jul 24 2018 Samuel Verschelde <stormi-xcp@ylix.fr> - 7.5.0.8-1
 - Replace XenCenter's installer with that of XCP-ng Center built by the XCP-ng community
 - New versioning 
 
