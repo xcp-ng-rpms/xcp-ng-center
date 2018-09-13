@@ -5,7 +5,7 @@ Summary: XCP-ng Center
 Name: xcp-ng-center
 %define version_xyz 7.5.0
 Version: %{version_xyz}.8
-Release: 2
+Release: 3
 License: BSD 2-Clause
 Vendor: %{VENDOR_FULL}
 BuildArch: noarch
@@ -17,6 +17,8 @@ BuildRequires: mkisofs
 
 Obsoletes: xencenter
 Provides: xencenter
+
+Requires(post): coreutils
 
 %define iso_dir opt/xensource/packages/iso
 %define www_dir opt/xensource/www
