@@ -3,8 +3,8 @@
 
 Summary: XCP-ng Center
 Name: xcp-ng-center
-%define version_xyz 7.6.0
-Version: %{version_xyz}.9
+%define version_xyz 7.6.1
+Version: %{version_xyz}.16
 Release: 1
 License: BSD 2-Clause
 Vendor: %{VENDOR_FULL}
@@ -92,6 +92,9 @@ fi
 /%{www_dir}/XenCenter.iso
 
 %changelog
+* Mon Nov 12 2018 Alexander Schulz <code@schulzalex.de> - 7.6.1.16-1
+- 7.6.1.16
+
 * Wed Oct 31 2018 Samuel Verschelde <stormi-xcp@ylix.fr> - 7.6.0.9-1
 - 7.6.0.9
 
