@@ -3,8 +3,8 @@
 
 Summary: XCP-ng Center
 Name: xcp-ng-center
-%define version_xyz 7.6.1
-Version: %{version_xyz}.16
+%define version_xyz 7.6.3
+Version: %{version_xyz}.21
 Release: 1
 License: BSD 2-Clause
 Vendor: %{VENDOR_FULL}
@@ -92,6 +92,21 @@ fi
 /%{www_dir}/XenCenter.iso
 
 %changelog
+* Fri Feb 15 2019 Alexander Schulz <code@schulzalex.de> - 7.6.3.21-1
+
+- Release 7.6.3.21
+- #136 Enhancement: NFS4.1 support
+
+- Release 7.6.3.20
+- #121 Enhancement: Suspend to RAM (cli: vm pause)
+- #132 Enhancement: Configure autostart option for VMs 
+- #130 Enhancement: Add new SR Types ext4, xfs and the old Type file
+- #127 Fix: Missing Schema Files
+
+- Release 7.6.2.17
+- #126 Enhancement: only sign our own *.exe and *.msi
+- #123 Fix: Null Reference Exception when trying to import disk image
+
 * Mon Nov 12 2018 Alexander Schulz <code@schulzalex.de> - 7.6.1.16-1
 - 7.6.1.16
 
