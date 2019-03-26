@@ -5,7 +5,7 @@ Summary: XCP-ng Center
 Name: xcp-ng-center
 %define version_xyz 7.6.3
 Version: %{version_xyz}.21
-Release: 1
+Release: 1%{dist}
 License: BSD 2-Clause
 Vendor: %{VENDOR_FULL}
 BuildArch: noarch
