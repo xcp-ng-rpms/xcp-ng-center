@@ -5,9 +5,8 @@ Summary: XCP-ng Center
 Name: xcp-ng-center
 %define version_xyz 7.6.3
 Version: %{version_xyz}.21
-Release: 1%{dist}
+Release: 2%{dist}
 License: BSD 2-Clause
-Vendor: %{VENDOR_FULL}
 BuildArch: noarch
 URL: https://github.com/xcp-ng/xenadmin
 Source0: https://github.com/xcp-ng/xenadmin/releases/download/v%{version_xyz}/XCP-ng-Center-%{version}.msi
